@@ -1,0 +1,37 @@
+name名称: 每日自动签到
+
+# 触发条件：每天北京时间 09:00 运行 (对应 UTC 01:00)
+# 同时保留手动触发功能，方便你随时测试
+on:启用:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch: 
+
+jobs:作业:
+  checkin:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 环境runs-on: ubuntu-latest # 使用最新的 Ubuntu 环境      runs-on: ubuntu-latest # 使用最新的 Ubuntu 环境runs-on: ubuntu-latest # 使用最新的 Ubuntu 环境
+
+    steps    步骤:
+      # 1. 拉取代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 设置 Node.js 环境并开启缓存 (加速依赖安装)
+      - name: Use Node.js      - 名称: 使用 Node.js      - name: 使用 Node.js      - 名称: 使用 Node.js      - name: 使用 Node.js      - 名称: 使用 Node.js      - name: 使用 Node.js      - 名称: 使用 Node.js
+        uses: actions/setup-node@v4
+        with:        使用:
+          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'
+          cache: 'npm' 
+
+      # 3. 安装依赖
+      - name: Install dependencies      - name: 安装依赖
+        run: |        运行: |
+          npm install
+
+      # 4. 运行脚本
+      - name: Run Script      - name: 运行脚本      - 名称: 运行脚本      - 名称:       - name: 运行脚本      - name: 运行脚本      - 名称: 运行脚本      - 名称: 运行脚本
+        env:        环境:
+          KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
+          KLW_PASSWORD: ${{ secrets.KLW_PASSWORD }}
+        run: |        运行: |
+          node index.js
