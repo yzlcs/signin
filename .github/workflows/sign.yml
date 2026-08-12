@@ -1,0 +1,36 @@
+名称: 每日自动签到
+
+# 触发条件
+启用:
+  schedule:
+    # 每天北京时间 09:00 运行 (对应 UTC 01:00)
+    - cron: '0 1 * * *'
+  # 允许手动点击按钮运行
+  workflow_dispatch:
+
+作业:
+  checkin:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取代码
+      - 名称: 检出代码
+        uses: actions/checkout@v4
+
+      # 2. 设置 Node.js 环境
+      - 名称: 使用 Node.js
+        uses: actions/setup-node@v4
+        使用:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. 安装依赖
+      - 名称: 安装依赖
+        运行: npm install
+
+      # 4. 运行脚本
+      - 名称: 运行脚本
+        环境:
+          KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
+          KLW_PASSWORD: ${{ secrets.KLW_PASSWORD }}
+        运行: node index.js
