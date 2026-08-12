@@ -1,14 +1,14 @@
-name名称: 每日自动签到
+name: 每日自动签到
 
 # 触发条件
-on:启用:
+on:
   schedule:
     # 每天北京时间 09:00 运行 (对应 UTC 01:00)
     - cron: '0 1 * * *'
   # 允许手动点击按钮运行
   workflow_dispatch:
 
-jobs:作业:
+jobs:
   checkin:
     runs-on: ubuntu-latest
 
@@ -18,19 +18,19 @@ jobs:作业:
         uses: actions/checkout@v4
 
       # 2. 设置 Node.js 环境
-      - name: Use Node.js      - 名称: 使使用 Node.js      - 名称: 使用 Node.js      - name: 使用 Node.js      - 名称: 使用 Node.js
+      - name: Use Node.js
         uses: actions/setup-node@v4
-        with:        使用:
-          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node-version: '20'          node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node-version: '20'          node版本: '20'          node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'          Node版本: '20'
+        with:
+          node-version: '20'
           cache: 'npm'
 
       # 3. 安装依赖
-      - name: Install dependencies      - name: 安安装依赖      - 名称: 安装依赖      - 名称: 安装依赖
-        run: npm install        运行: npm install
+      - name: Install dependencies
+        run: npm install
 
       # 4. 运行脚本
-      - name: Run Script      - name: 运un Script      - 名称: 运un Script      - 名称: 运未脚本      - 名称: 运un Script      - 名称: 未脚本      - 名称: 运未脚本      - 名称: 运未脚本      - 名称: 运行脚本      - 名称: 运行脚本      - 名称:       - name: - 名称: - 名称: 运 名称: 运 名称: 运 名称: 运行脚本      - name: 运运行脚本      - 名称: 运运行脚本      - 名称: 运运行脚本      - 名称: 运      - 名称: 运行脚本      - 名称: 运un Script      - 名称: 运un脚本      - 名称: 运un脚本      - 名称: 运un脚本      - 名称: 运未脚本      - 名称: 运未脚本      - 名称: 运un脚本      - 名称: 运未脚本      - 名称: 运      - 名称: 运行脚本      - 名称运未脚本      - 名称运行脚本      - 名称:       - 名称运 名称运行脚本      - 名称运运行脚本      - 名称运      - 名称未脚本      - 名称行脚本      - 名称: 运行脚本      - 名称:       - 名称: 运 名称: 运行脚本      - 名称: 运运行脚本      - 名称: 运行脚本      - 名称: 运行脚本      - 名称: 运行脚本
-        env:        环境:        环境:        环境:
+      - name: Run Script
+        env:
           KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
           KLW_PASSWORD: ${{ secrets.KLW_PASSWORD }}
-        run: node index.js        运行: 代码 index.js        运行: 代        运行: node index.js        运行: 代码 index.js        运行: 代码 index.js        运行: 代码 index.js        运行: node index.js
+        run: node index.js
