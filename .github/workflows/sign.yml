@@ -1,11 +1,9 @@
-name: 每日自动签到
+name: Daily Auto Sign-in
 
-# 触发条件
 on:
   schedule:
-    # 每天北京时间 09:00 运行 (对应 UTC 01:00)
+    # Runs at 01:00 UTC every day (09:00 Beijing Time)
     - cron: '0 1 * * *'
-  # 允许手动点击按钮运行
   workflow_dispatch:
 
 jobs:
@@ -13,22 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取代码
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. 设置 Node.js 环境
+      # 2. Setup Node.js environment
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      # 3. 安装依赖
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4. 运行脚本
+      # 4. Run the script
       - name: Run Script
         env:
           KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
