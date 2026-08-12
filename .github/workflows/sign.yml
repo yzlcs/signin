@@ -1,32 +1,34 @@
 name: 每日自动签到
+
 on:
   schedule:
-    - cron: '0 1 * * *'  # 每天 UTC 01:00 运行（北京时间 09:00）
+    # 每天 UTC 01:00 运行 (北京时间 09:00)
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
-jobs:作业:
+jobs:
   checkin:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code# 1. 检出代码# 1. 检出代码# 1. 检出代码
-      - name: C签到码名称: 检出代码
+      # 1. Checkout code
+      - name: 检出代码
         uses: actions/checkout@v6
 
-      # 2. Setup Node.js environment# 2. 配置 Node.js 环境
-      - name: U使用Node.js名称: 使用 Node.js
+      # 2. Setup Node.js environment
+      - name: 设置 Node.js 环境
         uses: actions/setup-node@v6
-        with:        使用:
-          node-version          node版本: '20'          node-version: '20'          node版本: '20'
+        with:
+          node-version: '20'
           cache: 'npm'
 
-      # 3. Install dependencies# 3. 安装依赖项
-      - name: Install dependencies名称: 安装依赖
-        run: npm install        运行: npm install
+      # 3. Install dependencies
+      - name: 安装依赖
+        run: npm install
 
-      # 4. Run the script# 4. 运行脚本# 4. 运行脚本# 4. 运行脚本
-      - name: R脚本名称: 运行脚本名称: 运行脚本
-        env:        环境:
-          KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
-          KLW_PASSWORD: ${{ secrets.KLW_PASSWORD }}
-编写index.js文件        运行: node index.js
+      # 4. Run the script
+      - name: 运行脚本
+        env:
+          KLM_USERNAME: ${{ secrets.KLM_USERNAME }}
+          KLM_PASSWORD: ${{ secrets.KLM_PASSWORD }}
+        run: node index.js
