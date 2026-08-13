@@ -2,9 +2,8 @@ name: Daily Sign In
 
 on:
   schedule:
-    # 每天 UTC 时间 00:00 运行 (也就是北京时间早上 8:00)
-    # 如果你想改时间，可以搜索 "cron generator" 生成新的时间
-    - cron: '0 0 * * *'
+    # 每天 UTC 时间 00:00 运行 (北京时间早上 8:00)
+    - cron: '0 0 * * *' 
   
   # 允许手动点击运行
   workflow_dispatch:
@@ -12,15 +11,17 @@ on:
 jobs:
   sign-in:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        # ✅ 升级到 v6 (最新版)
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        # ✅ 升级到 v4 并指定 Node.js 24 (消除警告的核心)
+        uses: actions/setup-node@v4
         with:
-          node-version: '18' # 使用 Node.js 18 版本
+          node-version: '24' 
 
       - name: Run Sign In Script
         env:
