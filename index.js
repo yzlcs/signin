@@ -8,7 +8,7 @@ const CONFIG = {
 
 (async () => {
   const browser = await puppeteer.launch({ 
-    headless: ture, // ✅ 改为有头模式，方便本地看界面调试
+    headless: true, // ✅ 改为有头模式，方便本地看界面调试
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
   }); 
   
