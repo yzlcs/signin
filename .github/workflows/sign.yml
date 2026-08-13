@@ -2,7 +2,7 @@ name: Daily Sign In
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 1 * * *'
   
   workflow_dispatch:
 
@@ -12,15 +12,19 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js environment
+      - name: Setup Node.js (Latest)
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 'latest'
           cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Run Sign In Script
         env:
-          KLW_COOKIE: ${{ secrets.KLW_COOKIE }}
+          KLW_USERNAME: ${{ secrets.KLW_USERNAME }}
+          KLW_PASSWORD: ${{ secrets.KLW_PASSWORD }}
         run: node index.js
