@@ -1,34 +1,29 @@
-name: 每日自动签到
+name: Daily Sign In
 
 on:
   schedule:
-    # 每天 UTC 01:00 运行 (北京时间 09:00)
-    - cron: '0 1 * * *'
+    # 每天 UTC 时间 00:00 运行 (也就是北京时间早上 8:00)
+    # 如果你想改时间，可以搜索 "cron generator" 生成新的时间
+    - cron: '0 0 * * *'
+  
+  # 允许手动点击运行
   workflow_dispatch:
 
 jobs:
-  checkin:
+  sign-in:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
-      - name: 检出代码
-        uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # 2. Setup Node.js environment
-      - name: 设置 Node.js 环境
-        uses: actions/setup-node@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18' # 使用 Node.js 18 版本
 
-      # 3. Install dependencies
-      - name: 安装依赖
-        run: npm install
-
-      # 4. Run the script
-      - name: 运行脚本
+      - name: Run Sign In Script
         env:
-          KLM_USERNAME: ${{ secrets.KLM_USERNAME }}
-          KLM_PASSWORD: ${{ secrets.KLM_PASSWORD }}
+          # 将 GitHub Secret 注入到环境变量
+          KLW_COOKIE: ${{ secrets.KLW_COOKIE }}
         run: node index.js
