@@ -1,95 +1,133 @@
 const puppeteer = require('puppeteer');
 
-// 从环境变量读取配置（在 GitHub Secrets 中配置）
+// 从环境变量读取配置，如果没有则使用默认值（方便本地调试）
 const CONFIG = {
-    username: process.env.KLW_USERNAME,
-    password: process.env.KLW_PASSWORD
+  username: process.env.KLW_USERNAME || '18759883641@163.com', 
+  password: process.env.KLW_PASSWORD || 'dny12345'             
 };
 
-if (!CONFIG.username || !CONFIG.password) {
-    console.error('❌ 错误：未配置 KLW_USERNAME 或 KLW_PASSWORD 环境变量！');
-    process.exit(1);
-}
-
 (async () => {
-    let browser;
+  const browser = await puppeteer.launch({ 
+    headless: true, // ✅ 改为有头模式，方便本地看界面调试
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+  }); 
+  
+  const page = await browser.newPage();
+  
+  // 设置视口大小，防止移动端布局导致元素找不到
+  await page.setViewport({ width: 1280, height: 800 });
+
+  try {
+    console.log('🌐 正在访问目标网站...');
+    await page.goto('https://klwllt.com', { waitUntil: 'networkidle2', timeout: 60000 });
+    
+    // ---------------------------------------------------------
+    // 1. 点击“欢迎加入喵”
+    // ---------------------------------------------------------
+    console.log('🔍 正在寻找并点击“欢迎加入喵”...');
     try {
-        // ✅ 使用 "new" 模式，在 GitHub Linux 环境下更稳定
-        browser = await puppeteer.launch({
-            headless: "new", 
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-        });
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 }).catch(() => {}), 
+        page.evaluate(() => {
+          const elements = Array.from(document.querySelectorAll('a, button, span'));
+          const btn = elements.find(el => (el.innerText || '').trim().includes('欢迎加入喵'));
+          if (btn) btn.click();
+        })
+      ]);
+      console.log('✅ 点击完成，等待页面稳定...');
+    } catch (e) {
+      console.log('⚠️ “欢迎加入喵”点击超时或未找到，继续执行...');
+    }
+    
+    await new Promise(r => setTimeout(r, 2000));
 
-        const page = await browser.newPage();
-        await page.setViewport({ width: 1280, height: 800 });
-        page.setDefaultTimeout(30000); 
+    // ---------------------------------------------------------
+    // 2. 点击顶部登录按钮
+    // ---------------------------------------------------------
+    console.log('🔑 正在强制点击顶部登录按钮...');
+    try {
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 }).catch(() => {}),
+        page.evaluate(() => {
+          const btn = document.querySelector('a.inn-sign__login-btn');
+          if (btn) btn.click();
+        })
+      ]);
+    } catch (e) {
+      console.log('⚠️ 登录按钮点击未触发跳转，可能是弹窗模式，继续尝试填写...');
+    }
 
-        // ---------------------------------------------------------
-        // 1. 访问网页
-        // ---------------------------------------------------------
-        console.log('🌐 [1/6] 正在访问目标网站...');
-        await page.goto('https://klwllt.com', { waitUntil: 'networkidle2', timeout: 60000 });
-        console.log('✅ [1/6] 页面加载完成');
+    // ---------------------------------------------------------
+    // 3. 等待登录框出现并填写信息
+    // ---------------------------------------------------------
+    console.log('⏳ 等待登录输入框加载...');
+    await page.waitForSelector('input[name="pwd"]', { visible: true, timeout: 20000 });
+    console.log('✅ 登录框已就绪');
 
-        // ---------------------------------------------------------
-        // 2. 点击“欢迎加入喵”
-        // ---------------------------------------------------------
-        console.log('🔍 [2/6] 正在点击“欢迎加入喵”...');
-        try {
-            await page.click('text=欢迎加入喵', { timeout: 5000 });
-            console.log('✅ [2/6] 点击“欢迎加入喵”成功');
-            await new Promise(r => setTimeout(r, 2000)); // 等待页面响应
-        } catch (e) {
-            console.log('⚠️ [2/6] 未找到“欢迎加入喵”按钮，继续执行...');
-        }
+    console.log('⌨️ 正在填写账号...');
+    await page.type('input[name="email"]', CONFIG.username, { delay: 50 }); 
 
-        // ---------------------------------------------------------
-        // 3. 点击“登录”
-        // ---------------------------------------------------------
-        console.log('🔑 [3/6] 正在点击“登录”按钮...');
-        try {
-            await page.click('text=登录', { timeout: 5000 });
-            console.log('✅ [3/6] 点击“登录”成功');
-            await new Promise(r => setTimeout(r, 3000)); // 等待登录弹窗或页面加载
-        } catch (e) {
-            console.log('❌ [3/6] 未找到“登录”按钮');
-        }
+    console.log('⌨️ 正在填写密码...');
+    await page.type('input[name="pwd"]', CONFIG.password, { delay: 50 });
 
-        // ---------------------------------------------------------
-        // 4. 输入账号
-        // ---------------------------------------------------------
-        console.log('⌨️ [4/6] 正在输入账号...');
-        // 优先找 name=email，找不到找 type=email，再找不到找第一个可见的文本框
-        const accountSelectors = ['input[name="email"]', 'input[name="username"]', 'input[type="email"]', 'input[type="text"]'];
-        let accountFilled = false;
-        for (const selector of accountSelectors) {
-            try {
-                await page.waitForSelector(selector, { visible: true, timeout: 3000 });
-                await page.type(selector, CONFIG.username, { delay: 50 });
-                accountFilled = true;
-                console.log(`✅ [4/6] 账号输入成功 (${selector})`);
-                break;
-            } catch (e) {}
-        }
-        if (!accountFilled) {
-            console.log('⚠️ [4/6] 常规账号输入框未找到，尝试兜底填写...');
-            await page.evaluate((user) => {
-                const inputs = Array.from(document.querySelectorAll('input'));
-                const target = inputs.find(i => i.type !== 'password' && i.type !== 'hidden' && i.offsetParent !== null);
-                if (target) { target.value = user; target.dispatchEvent(new Event('input', { bubbles: true })); }
-            }, CONFIG.username);
-        }
+    // ---------------------------------------------------------
+    // 4. 提交登录
+    // ---------------------------------------------------------
+    console.log('🚀 正在提交登录...');
+    
+    const loginBtnClicked = await page.evaluate(() => {
+        const btn = Array.from(document.querySelectorAll('button')).find(el => el.innerText.includes('登录'));
+        if(btn) { btn.click(); return true; }
+        return false;
+    });
 
-        // ---------------------------------------------------------
-        // 5. 输入密码
-        // ---------------------------------------------------------
-        console.log('🔒 [5/6] 正在输入密码...');
-        const pwdSelectors = ['input[name="pwd"]', 'input[name="password"]', 'input[type="password"]'];
-        let pwdFilled = false;
-        for (const selector of pwdSelectors) {
-            try {
-                await page.waitForSelector(selector, { visible: true, timeout: 3000 });
-                await page.type(selector, CONFIG.password, { delay: 50 });
-                pwdFilled = true;
-                console.log(`✅ [5/6] 密码输入成功 (${selector})`);
-                break
+    if (!loginBtnClicked) {
+        await page.keyboard.press('Enter');
+    }
+
+    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {});
+    await new Promise(r => setTimeout(r, 2000));
+    
+    const isStillLogin = await page.$('input[name="pwd"]');
+    if (isStillLogin) {
+      console.log('❌ 似乎仍在登录页，账号或密码可能错误，或者验证码拦截。');
+    } else {
+        console.log('✅ 登录状态检查通过');
+    }
+
+    // ---------------------------------------------------------
+    // 5. 签到
+    // ---------------------------------------------------------
+    console.log('📅 正在寻找签到按钮...');
+    const signed = await page.evaluate(() => {
+      const elements = Array.from(document.querySelectorAll('button, a, span'));
+      const btn = elements.find(el => {
+        const txt = el.innerText.trim();
+        return txt.includes('签到') || txt.includes('打卡');
+      });
+      
+      if (btn) {
+        btn.click();
+        return true;
+      }
+      return false;
+    });
+
+    if (signed) {
+        console.log('🎉 签到动作已执行！');
+        await new Promise(r => setTimeout(r, 3000));
+    } else {
+        console.log('ℹ️ 未找到签到按钮，可能今天已经签到过了。');
+    }
+
+    console.log('🏁 任务全部完成。');
+
+  } catch (error) {
+    console.error('❌ 发生严重错误:', error.message);
+    process.exit(1); 
+  } finally {
+    // 本地调试时，如果你想在最后多看几眼页面，可以加个延迟再关闭
+    // await new Promise(r => setTimeout(r, 5000)); 
+    await browser.close(); 
+  }
+})();
