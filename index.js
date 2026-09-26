@@ -19,7 +19,7 @@ const CONFIG = {
 
   try {
     console.log('🌐 正在访问目标网站...');
-    await page.goto('https://klwllt.com', { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.goto('https://re.coklwllt.net', { waitUntil: 'networkidle2', timeout: 60000 });
     
     // ---------------------------------------------------------
     // 1. 点击“欢迎加入喵”
